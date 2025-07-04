@@ -3,9 +3,9 @@ UNICODE = 0
 PLATFORM=linux
 FLAGS= 
 
-THIRD_JSONCPP_PATH = ./XEngine_Depend/XEngine_Module/jsoncpp
-THIRD_TINYXML_PATH = ./XEngine_Depend/XEngine_Module/tinyxml2
-THIRD_REPORT_PATH = ./XEngine_Depend/XEngine_Module/XEngine_InfoReport
+THIRD_JSONCPP_PATH = ./XEngine_DependLibrary/XEngine_Module/jsoncpp
+THIRD_TINYXML_PATH = ./XEngine_DependLibrary/XEngine_Module/tinyxml2
+THIRD_REPORT_PATH = ./XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport
 
 BASE_SQL_PATH = ./StorageModule_Database
 BASE_CONFIG_PATH = ./StorageModule_Config

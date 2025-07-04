@@ -64,8 +64,8 @@ using namespace std;
 #include "../StorageModule_APIHelp/APIHelp_Error.h"
 #include "../StorageModule_BTorrent/BTorrent_Define.h"
 #include "../StorageModule_BTorrent/BTorrent_Error.h"
-#include "../XEngine_Depend/XEngine_Module/XEngine_InfoReport/InfoReport_Define.h"
-#include "../XEngine_Depend/XEngine_Module/XEngine_InfoReport/InfoReport_Error.h"
+#include "../XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport/InfoReport_Define.h"
+#include "../XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport/InfoReport_Error.h"
 
 #define STORAGE_LEAVETYPE_HEARTBEAT 1
 #define STORAGE_LEAVETYPE_BYSELF 2
