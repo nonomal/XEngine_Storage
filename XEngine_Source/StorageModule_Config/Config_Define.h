@@ -74,6 +74,7 @@ typedef struct tag_XEngine_ServerConfig
 		bool bUPPass;
 		bool bDLPass;
         bool bAuthPass;
+        int nVType;
 		XCHAR tszUPPass[XPATH_MAX];
 		XCHAR tszDLPass[XPATH_MAX];
         XCHAR tszAuthPass[XPATH_MAX];

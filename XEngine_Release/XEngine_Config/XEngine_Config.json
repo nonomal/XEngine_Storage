@@ -68,6 +68,7 @@
         "bUPEnable": false,
         "bCHEnable": false,
         "bWDEnable": false,
+        "nVType": 1,
         "tszCertChain": "./XEngine_Cert/server.crt",
         "tszCertServer": "",
         "tszCertKey": "./XEngine_Cert/server.key"

@@ -6,7 +6,7 @@ LOADHDR = -I ./ -I ../XEngine_DependLibrary/XEngine_Module/jsoncpp
 LOADSO = -L ../XEngine_DependLibrary/XEngine_Module/jsoncpp
 LIB = -lXEngine_BaseLib -lXEngine_Cryption -lRfcComponents_HttpProtocol -lXEngine_SystemApi -ljsoncpp
 LIBEX = 
-OBJECTS = APIHelp_Distributed.o APIHelp_Api.o APIHelp_Cryption.o pch.o
+OBJECTS = APIHelp_Distributed.o APIHelp_Api.o pch.o
 
 ifeq ($(RELEASE),1)
 FLAGS = -c -D _RELEASE
