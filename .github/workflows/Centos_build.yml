@@ -56,11 +56,11 @@ jobs:
           repository: libxengine/libxengine
           path: libxengine
 
-      - name: sub module checkout (XEngine_OPenSource)
+      - name: sub module checkout (opensource)
         uses: actions/checkout@v4
         with:
           repository: libxengine/XEngine_OPenSource
-          path: XEngine_Source/XEngine_DependLibrary/XEngine_OPenSource
+          path: XEngine_Source/XEngine_DependLibrary
 
       - name: Set TERM variable
         run: echo "TERM=xterm" >> $GITHUB_ENV
