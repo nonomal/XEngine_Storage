@@ -25,6 +25,7 @@ public:
 	bool APIHelp_Distributed_UPStorage(list<XENGINE_STORAGEBUCKET>* pStl_ListBucket, XENGINE_STORAGEBUCKET* pSt_StorageBucket, int nMode);
 	bool APIHelp_Distributed_GetPathKey(list<XENGINE_STORAGEBUCKET>* pStl_ListBucket, LPCXSTR lpszBuckKey, XCHAR* ptszFilePath);
 	__int64u APIHelp_Distributed_GetSize(LPCXSTR lpszMsgBuffer);
+	bool APIHelp_Distributed_SetSize(list<XENGINE_STORAGEBUCKET>* pStl_ListBucket, LPCXSTR lpszBuckKey, __int64x nSize);
 protected:
 	bool APIHelp_Distributed_FileListParse(LPCXSTR lpszMsgBuffer, int nMsgLen, XSTORAGECORE_DBFILE* pSt_DBFile);
 private:

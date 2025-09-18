@@ -59,6 +59,10 @@ extern "C" __int64u APIHelp_Distributed_GetSize(LPCXSTR lpszMsgBuffer)
 {
 	return m_APIDistributed.APIHelp_Distributed_GetSize(lpszMsgBuffer);
 }
+extern "C" bool APIHelp_Distributed_SetSize(list<XENGINE_STORAGEBUCKET>* pStl_ListBucket, LPCXSTR lpszBuckKey, __int64x nSize)
+{
+	return m_APIDistributed.APIHelp_Distributed_SetSize(pStl_ListBucket, lpszBuckKey, nSize);
+}
 /************************************************************************/
 /*                       帮助函数                                       */
 /************************************************************************/

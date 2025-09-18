@@ -10,6 +10,7 @@ EXPORTS
 	APIHelp_Distributed_UPStorage
 	APIHelp_Distributed_GetPathKey
 	APIHelp_Distributed_GetSize
+	APIHelp_Distributed_SetSize
 
 	APIHelp_Api_RangeFile
 	APIHelp_Api_VerHash

@@ -523,6 +523,57 @@ __int64u CAPIHelp_Distributed::APIHelp_Distributed_GetSize(LPCXSTR lpszMsgBuffer
 
 	return nllSize;
 }
+/********************************************************************
+函数名称：APIHelp_Distributed_SetSize
+函数功能：设置指定BUCKET当前大小
+ 参数.一：pStl_ListBucket
+  In/Out：In
+  类型：STL容器
+  可空：N
+  意思：输入BUCKET列表
+ 参数.二：lpszBuckKey
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要查询的BUCKET名称
+ 参数.三：nSize
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：支持+ - 操作
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CAPIHelp_Distributed::APIHelp_Distributed_SetSize(list<XENGINE_STORAGEBUCKET>* pStl_ListBucket, LPCXSTR lpszBuckKey, __int64x nSize)
+{
+	APIHelp_IsErrorOccur = false;
+
+	if ((NULL == pStl_ListBucket) || (NULL == lpszBuckKey))
+	{
+		APIHelp_IsErrorOccur = true;
+		APIHelp_dwErrorCode = ERROR_STORAGE_MODULE_APIHELP_PARAMENT;
+		return false;
+	}
+	bool bFound = false;
+	for (auto stl_ListIterator = pStl_ListBucket->begin(); stl_ListIterator != pStl_ListBucket->end(); stl_ListIterator++)
+	{
+		if (0 == _tcsxncmp(lpszBuckKey, stl_ListIterator->tszBuckKey, _tcsxlen(stl_ListIterator->tszBuckKey)))
+		{
+			stl_ListIterator->nBuckSize += nSize;
+			bFound = true;
+			break;
+		}
+	}
+	if (!bFound)
+	{
+		APIHelp_IsErrorOccur = true;
+		APIHelp_dwErrorCode = ERROR_STORAGE_MODULE_APIHELP_NOTFOUND;
+		return false;
+	}
+	return true;
+}
 //////////////////////////////////////////////////////////////////////////
 //                               保护函数
 //////////////////////////////////////////////////////////////////////////
