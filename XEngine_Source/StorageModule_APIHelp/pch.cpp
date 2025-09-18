@@ -55,6 +55,10 @@ extern "C" bool APIHelp_Distributed_GetPathKey(list<XENGINE_STORAGEBUCKET>*pStl_
 {
 	return m_APIDistributed.APIHelp_Distributed_GetPathKey(pStl_ListBucket, lpszBuckKey, ptszFilePath);
 }
+extern "C" __int64u APIHelp_Distributed_GetSize(LPCXSTR lpszMsgBuffer)
+{
+	return m_APIDistributed.APIHelp_Distributed_GetSize(lpszMsgBuffer);
+}
 /************************************************************************/
 /*                       帮助函数                                       */
 /************************************************************************/

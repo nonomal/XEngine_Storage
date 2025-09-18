@@ -166,6 +166,20 @@ extern "C" bool APIHelp_Distributed_UPStorage(list<XENGINE_STORAGEBUCKET>* pStl_
 备注：
 *********************************************************************/
 extern "C" bool APIHelp_Distributed_GetPathKey(list<XENGINE_STORAGEBUCKET>* pStl_ListBucket, LPCXSTR lpszBuckKey, XCHAR* ptszFilePath);
+/********************************************************************
+函数名称：APIHelp_Distributed_GetSize
+函数功能：获取存储设置大小
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要获取的缓冲区
+返回值
+  类型：整数型
+  意思：获取到的大小字节
+备注：
+*********************************************************************/
+extern "C" __int64u APIHelp_Distributed_GetSize(LPCXSTR lpszMsgBuffer);
 /************************************************************************/
 /*                       帮助函数                                       */
 /************************************************************************/

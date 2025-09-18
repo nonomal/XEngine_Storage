@@ -130,6 +130,7 @@ typedef struct
     XCHAR tszFileName[XPATH_MAX];
     XCHAR tszBuckKey[128];
     XCHAR tszBuckSize[64];
+    __int64u nBuckSize;        //临时统计
     int nLevel;
     bool bEnable;
     struct 
