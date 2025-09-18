@@ -390,6 +390,8 @@ bool XEngine_Task_HttpWebdav(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		{
 			if (st_FileAttr.bFile)
 			{
+				__int64x nTmpSize = st_FileAttr.nFileSize;
+				APIHelp_Distributed_SetSize(st_LoadbalanceCfg.st_LoadBalance.pStl_ListBucket, st_StorageBucket.tszBuckKey, -nTmpSize);
 				_xtremove(tszFileName);
 			}
 			else
