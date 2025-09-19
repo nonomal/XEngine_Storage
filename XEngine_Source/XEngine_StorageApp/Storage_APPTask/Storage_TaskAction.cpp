@@ -119,7 +119,10 @@ bool Storage_TaskAction(LPCXSTR lpszAPIName, LPCXSTR lpszClientAddr, LPCXSTR lps
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("业务客户端:%s,处理用户转录动作失败,下载文件失败,URL:%s,路径:%s,Bucket:%s,类型:%d"), lpszClientAddr, st_ActionInfo.tszFileUrl, tszFileName, st_ActionInfo.tszBucketStr, st_ActionInfo.byType);
 				return false;
 			}
-			APIClient_File_SetMaxSpeed(xhAction, st_ServiceCfg.st_XAction.nSDMax, st_ServiceCfg.st_XAction.nRVMax);
+			if (st_ServiceCfg.st_XAction.nRVMax > 0)
+			{
+				APIClient_File_SetMaxSpeed(xhAction, st_ServiceCfg.st_XAction.nSDMax, st_ServiceCfg.st_XAction.nRVMax);
+			}
 			APIClient_File_Start(xhAction);
 			Session_Action_Insert(xhToken, xhAction, &st_ActionInfo);
 			Protocol_StoragePacket_Action(tszRVBuffer, &nRVLen, xhToken, &st_ActionInfo);
@@ -141,7 +144,10 @@ bool Storage_TaskAction(LPCXSTR lpszAPIName, LPCXSTR lpszClientAddr, LPCXSTR lps
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("业务客户端:%s,处理用户转录动作失败,下载文件失败,URL:%s,路径:%s,Bucket:%s,类型:%d"), lpszClientAddr, st_ActionInfo.tszFileUrl, tszFileName, st_ActionInfo.tszBucketStr, st_ActionInfo.byType);
 				return false;
 			}
-			APIClient_File_SetMaxSpeed(xhAction, st_ServiceCfg.st_XAction.nSDMax, st_ServiceCfg.st_XAction.nRVMax);
+			if (st_ServiceCfg.st_XAction.nSDMax)
+			{
+				APIClient_File_SetMaxSpeed(xhAction, st_ServiceCfg.st_XAction.nSDMax, st_ServiceCfg.st_XAction.nRVMax);
+			}
 			APIClient_File_Start(xhAction);
 			Session_Action_Insert(xhToken, xhAction, &st_ActionInfo);
 			Protocol_StoragePacket_Action(tszRVBuffer, &nRVLen, xhToken, &st_ActionInfo);
