@@ -63,7 +63,7 @@ bool XEngine_Task_HttpCenter(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 	{
 		st_HDRParam.nHttpCode = 400;
 		HttpProtocol_Server_SendMsgEx(xhCenterHttp, tszSDBuffer, &nSDLen, &st_HDRParam);
-		XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen);
+		XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, STORAGE_NETTYPE_HTTPCENTER);
 		BaseLib_Memory_Free((XPPPMEM)&pptszUrlList, nUrlCount);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,发送的URL请求参数不正确:%s"), lpszClientAddr, pSt_HTTPParam->tszHttpUri);
 		return false;
