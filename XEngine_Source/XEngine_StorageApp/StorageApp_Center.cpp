@@ -52,13 +52,14 @@ bool XEngine_Task_HttpCenter(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 
 	LPCXSTR lpszMethodPost = _X("POST");
 	LPCXSTR lpszMethodGet = _X("GET");
+	LPCXSTR lpszMethodHead = _X("HEAD");
 
 	XCHAR** pptszUrlList;
 	XCHAR tszUrlName[128];
 	int nUrlCount = 0;
 	//得到URL参数个数
 	HttpProtocol_ServerHelp_GetParament(pSt_HTTPParam->tszHttpUri, &pptszUrlList, &nUrlCount, tszUrlName);
-	if (nUrlCount < 1)
+	if (nUrlCount < 1 && (0 != _tcsxncmp(lpszMethodHead, pSt_HTTPParam->tszHttpMethod, _tcsxlen(lpszMethodHead))))
 	{
 		st_HDRParam.nHttpCode = 400;
 		HttpProtocol_Server_SendMsgEx(xhCenterHttp, tszSDBuffer, &nSDLen, &st_HDRParam);
@@ -206,6 +207,32 @@ bool XEngine_Task_HttpCenter(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 			XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, STORAGE_NETTYPE_HTTPCENTER);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("业务客户端:%s,请求GET心跳方法成功"), lpszClientAddr);
 		}
+	}
+	else if (0 == _tcsxncmp(lpszMethodHead, pSt_HTTPParam->tszHttpMethod, _tcsxlen(lpszMethodHead)))
+	{
+		//获得文件大小
+		XCHAR tszFileExt[64] = {};
+		XCHAR tszFileHdr[XPATH_MIN] = {};
+		XCHAR tszFilePath[XPATH_MAX] = {};
+		SYSTEMAPI_FILE_ATTR st_FileAttr = {};
+
+		_xstprintf(tszFilePath, _X(".%s"), pSt_HTTPParam->tszHttpUri);
+		if (0 != _xtaccess(tszFilePath, 0))
+		{
+			st_HDRParam.nHttpCode = 404;
+			Protocol_StoragePacket_HTTPPacket(tszRVBuffer, &nRVLen, ERROR_STORAGE_PROTOCOL_HTTP_MANAGE_NOTFOUND, "file not found");
+			HttpProtocol_Server_SendMsgEx(xhCenterHttp, tszSDBuffer, &nSDLen, &st_HDRParam, tszRVBuffer, nRVLen);
+			XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, STORAGE_NETTYPE_HTTPCENTER);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("业务客户端:%s,请求文件大小失败,文件:%s 不存在"), lpszClientAddr, pSt_HTTPParam->tszHttpUri);
+			return false;
+		}
+		SystemApi_File_GetFileAttr(tszFilePath, &st_FileAttr);
+		BaseLib_String_GetFileAndPath(tszFilePath, NULL, NULL, NULL, tszFileExt);
+		_xstprintf(tszFileHdr, _X("Content-Length: %lld\r\n"), st_FileAttr.nFileSize);
+
+		HttpProtocol_Server_SendMsgEx(xhCenterHttp, tszSDBuffer, &nSDLen, &st_HDRParam, NULL, 0, tszFileHdr);
+		XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, STORAGE_NETTYPE_HTTPCENTER);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("业务客户端:%s,请求获取文件:%s 大小:%lld 成功"), lpszClientAddr, tszFilePath, st_FileAttr.nFileSize);
 	}
 	else
 	{
