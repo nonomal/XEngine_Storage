@@ -18,14 +18,14 @@ bool XEngine_Task_Manage(LPCXSTR lpszAPIName, LPCXSTR lpszClientAddr, LPCXSTR lp
 
 	st_HDRParam.bIsClose = true;
 	st_HDRParam.nHttpCode = 200;
-	if (0 == _tcsxncmp(lpszAPIConfig, lpszAPIName, _tcsxlen(lpszAPIConfig)))
+	if (0 == _tcsxnicmp(lpszAPIConfig, lpszAPIName, _tcsxlen(lpszAPIConfig)))
 	{
 		StorageApp_Config_Parament(0, NULL);
 		HttpProtocol_Server_SendMsgEx(xhCenterHttp, tszSDBuffer, &nSDLen, &st_HDRParam);
 		XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, STORAGE_NETTYPE_HTTPCENTER);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("业务客户端:%s,处理用户重载配置文件成功"), lpszClientAddr);
 	}
-	else if (0 == _tcsxncmp(lpszAPIQuery, lpszAPIName, _tcsxlen(lpszAPIQuery)))
+	else if (0 == _tcsxnicmp(lpszAPIQuery, lpszAPIName, _tcsxlen(lpszAPIQuery)))
 	{
 		//查询文件列表
 		int nMode = 0;
@@ -160,7 +160,7 @@ bool XEngine_Task_Manage(LPCXSTR lpszAPIName, LPCXSTR lpszClientAddr, LPCXSTR lp
 			stl_ListFile.clear();
 		}
 	}
-	else if (0 == _tcsxncmp(lpszAPIInsert, lpszAPIName, _tcsxlen(lpszAPIInsert)))
+	else if (0 == _tcsxnicmp(lpszAPIInsert, lpszAPIName, _tcsxlen(lpszAPIInsert)))
 	{
 		int nListCount = 0;
 		XSTORAGECORE_DBFILE** ppSt_DBFile;
@@ -200,7 +200,7 @@ bool XEngine_Task_Manage(LPCXSTR lpszAPIName, LPCXSTR lpszClientAddr, LPCXSTR lp
 		XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, STORAGE_NETTYPE_HTTPCENTER);
 		BaseLib_Memory_Free((XPPPMEM)&ppSt_DBFile, nListCount);
 	}
-	else if (0 == _tcsxncmp(lpszAPIDelete, lpszAPIName, _tcsxlen(lpszAPIDelete)))
+	else if (0 == _tcsxnicmp(lpszAPIDelete, lpszAPIName, _tcsxlen(lpszAPIDelete)))
 	{
 		int nListCount = 0;
 		XSTORAGECORE_DBFILE** ppSt_DBFile;
@@ -278,7 +278,7 @@ bool XEngine_Task_Manage(LPCXSTR lpszAPIName, LPCXSTR lpszClientAddr, LPCXSTR lp
 		XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, STORAGE_NETTYPE_HTTPCENTER);
 		BaseLib_Memory_Free((XPPPMEM)&ppSt_DBFile, nListCount);
 	}
-	else if (0 == _tcsxncmp(lpszAPIDir, lpszAPIName, _tcsxlen(lpszAPIDir)))
+	else if (0 == _tcsxnicmp(lpszAPIDir, lpszAPIName, _tcsxlen(lpszAPIDir)))
 	{
 		int nOPCode = 0;
 		int nListCount = 0;
@@ -344,7 +344,7 @@ bool XEngine_Task_Manage(LPCXSTR lpszAPIName, LPCXSTR lpszClientAddr, LPCXSTR lp
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("业务客户端:%s,请求删除文件夹:%s,成功"), lpszClientAddr, tszRealDir);
 		}
 	}
-	else if (0 == _tcsxncmp(lpszAPIBucket, lpszAPIName, _tcsxlen(lpszAPIBucket)))
+	else if (0 == _tcsxnicmp(lpszAPIBucket, lpszAPIName, _tcsxlen(lpszAPIBucket)))
 	{
 		XCHAR tszBuckKey[XPATH_MAX] = {};
 		Protocol_StorageParse_DirOperator(lpszMsgBuffer, NULL, tszBuckKey, NULL);
@@ -371,7 +371,7 @@ bool XEngine_Task_Manage(LPCXSTR lpszAPIName, LPCXSTR lpszClientAddr, LPCXSTR lp
 		XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, STORAGE_NETTYPE_HTTPCENTER);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("业务客户端:%s,请求获取BUCKET信息成功"), lpszClientAddr);
 	}
-	else if (0 == _tcsxncmp(lpszAPIFlushSize, lpszAPIName, _tcsxlen(lpszAPIFlushSize)))
+	else if (0 == _tcsxnicmp(lpszAPIFlushSize, lpszAPIName, _tcsxlen(lpszAPIFlushSize)))
 	{
 		XCHAR tszBuckKey[XPATH_MAX] = {};
 		Protocol_StorageParse_DirOperator(lpszMsgBuffer, NULL, tszBuckKey, NULL);
@@ -380,7 +380,7 @@ bool XEngine_Task_Manage(LPCXSTR lpszAPIName, LPCXSTR lpszClientAddr, LPCXSTR lp
 			XENGINE_STORAGEBUCKET st_StorageBucket = {};
 			for (auto stl_ListIterator = st_LoadbalanceCfg.st_LoadBalance.pStl_ListBucket->begin(); stl_ListIterator != st_LoadbalanceCfg.st_LoadBalance.pStl_ListBucket->end(); stl_ListIterator++)
 			{
-				if (0 == _tcsxncmp(stl_ListIterator->tszBuckKey, tszBuckKey, _tcsxlen(stl_ListIterator->tszBuckKey)))
+				if (0 == _tcsxnicmp(stl_ListIterator->tszBuckKey, tszBuckKey, _tcsxlen(stl_ListIterator->tszBuckKey)))
 				{
 					APIHelp_Api_GetDIRSize(stl_ListIterator->tszFilePath, &stl_ListIterator->nBuckSize);
 					st_StorageBucket = *stl_ListIterator;
@@ -394,7 +394,7 @@ bool XEngine_Task_Manage(LPCXSTR lpszAPIName, LPCXSTR lpszClientAddr, LPCXSTR lp
 		{
 			for (auto stl_ListIterator = st_LoadbalanceCfg.st_LoadBalance.pStl_ListBucket->begin(); stl_ListIterator != st_LoadbalanceCfg.st_LoadBalance.pStl_ListBucket->end(); stl_ListIterator++)
 			{
-				if (0 == _tcsxncmp(stl_ListIterator->tszBuckKey, tszBuckKey, _tcsxlen(stl_ListIterator->tszBuckKey)))
+				if (0 == _tcsxnicmp(stl_ListIterator->tszBuckKey, tszBuckKey, _tcsxlen(stl_ListIterator->tszBuckKey)))
 				{
 					APIHelp_Api_GetDIRSize(stl_ListIterator->tszFilePath, &stl_ListIterator->nBuckSize);
 				}
@@ -405,7 +405,7 @@ bool XEngine_Task_Manage(LPCXSTR lpszAPIName, LPCXSTR lpszClientAddr, LPCXSTR lp
 		XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, STORAGE_NETTYPE_HTTPCENTER);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("业务客户端:%s,请求刷新BUCKET大小成功"), lpszClientAddr);
 	}
-	else if (0 == _tcsxncmp(lpszAPITask, lpszAPIName, _tcsxlen(lpszAPITask)))
+	else if (0 == _tcsxnicmp(lpszAPITask, lpszAPIName, _tcsxlen(lpszAPITask)))
 	{
 		int nDLCount = 0;
 		int nUPCount = 0;

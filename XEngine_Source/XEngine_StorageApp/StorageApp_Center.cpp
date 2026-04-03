@@ -59,7 +59,7 @@ bool XEngine_Task_HttpCenter(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 	int nUrlCount = 0;
 	//得到URL参数个数
 	HttpProtocol_ServerHelp_GetParament(pSt_HTTPParam->tszHttpUri, &pptszUrlList, &nUrlCount, tszUrlName);
-	if (nUrlCount < 1 && (0 != _tcsxncmp(lpszMethodHead, pSt_HTTPParam->tszHttpMethod, _tcsxlen(lpszMethodHead))))
+	if (nUrlCount < 1 && (0 != _tcsxnicmp(lpszMethodHead, pSt_HTTPParam->tszHttpMethod, _tcsxlen(lpszMethodHead))))
 	{
 		st_HDRParam.nHttpCode = 400;
 		HttpProtocol_Server_SendMsgEx(xhCenterHttp, tszSDBuffer, &nSDLen, &st_HDRParam);
@@ -163,7 +163,7 @@ bool XEngine_Task_HttpCenter(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,HTTP验证类型:%d 通过"), lpszClientAddr, nVType);
 	}
 
-	if (0 == _tcsxncmp(lpszMethodPost, pSt_HTTPParam->tszHttpMethod, _tcsxlen(lpszMethodPost)))
+	if (0 == _tcsxnicmp(lpszMethodPost, pSt_HTTPParam->tszHttpMethod, _tcsxlen(lpszMethodPost)))
 	{
 		LPCXSTR lpszAPIPass = _X("Pass");
 		LPCXSTR lpszAPIManage = _X("Manage");
@@ -171,21 +171,21 @@ bool XEngine_Task_HttpCenter(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 
 		BaseLib_String_GetKeyValueA(pptszUrlList[0], "=", tszStrKey, tszStrVlu);
 		//通知类型.用于多服务器
-		if (0 == _tcsxncmp(lpszAPIPass, tszStrVlu, _tcsxlen(lpszAPIPass)))
+		if (0 == _tcsxnicmp(lpszAPIPass, tszStrVlu, _tcsxlen(lpszAPIPass)))
 		{
 			//http://127.0.0.1:5100/api?function=pass&param=xxx
 			memset(tszStrVlu, '\0', sizeof(tszStrVlu));
 			BaseLib_String_GetKeyValueA(pptszUrlList[1], "=", tszStrKey, tszStrVlu);
 			XEngine_Task_Pass(tszStrVlu, lpszClientAddr, lpszMsgBuffer, nMsgLen, pSt_HTTPParam);
 		}
-		else if (0 == _tcsxncmp(lpszAPIManage, tszStrVlu, _tcsxlen(lpszAPIManage)))
+		else if (0 == _tcsxnicmp(lpszAPIManage, tszStrVlu, _tcsxlen(lpszAPIManage)))
 		{
 			//http://127.0.0.1:5100/api?function=manage&param=xxx
 			memset(tszStrVlu, '\0', sizeof(tszStrVlu));
 			BaseLib_String_GetKeyValueA(pptszUrlList[1], "=", tszStrKey, tszStrVlu);
 			XEngine_Task_Manage(tszStrVlu, lpszClientAddr, lpszMsgBuffer, nMsgLen, pSt_HTTPParam);
 		}
-		else if (0 == _tcsxncmp(lpszAPIAction, tszStrVlu, _tcsxlen(lpszAPIAction)))
+		else if (0 == _tcsxnicmp(lpszAPIAction, tszStrVlu, _tcsxlen(lpszAPIAction)))
 		{
 			//http://127.0.0.1:5100/api?function=action&param=xxx
 			memset(tszStrVlu, '\0', sizeof(tszStrVlu));
@@ -193,14 +193,14 @@ bool XEngine_Task_HttpCenter(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 			Storage_TaskAction(tszStrVlu, lpszClientAddr, lpszMsgBuffer, nMsgLen, pSt_HTTPParam);
 		}
 	}
-	else if (0 == _tcsxncmp(lpszMethodGet, pSt_HTTPParam->tszHttpMethod, _tcsxlen(lpszMethodGet)))
+	else if (0 == _tcsxnicmp(lpszMethodGet, pSt_HTTPParam->tszHttpMethod, _tcsxlen(lpszMethodGet)))
 	{
 		//用于心跳
 		//http://127.0.0.1:5100/api?function=heart
 		LPCXSTR lpszAPIHeart = _X("heart");
 
 		BaseLib_String_GetKeyValueA(pptszUrlList[0], "=", tszStrKey, tszStrVlu);
-		if (0 == _tcsxncmp(lpszAPIHeart, tszStrVlu, _tcsxlen(lpszAPIHeart)))
+		if (0 == _tcsxnicmp(lpszAPIHeart, tszStrVlu, _tcsxlen(lpszAPIHeart)))
 		{
 			LPCXSTR lpszHdrBuffer = _X("Allow: POST GET PUT\r\n");
 			HttpProtocol_Server_SendMsgEx(xhCenterHttp, tszSDBuffer, &nSDLen, &st_HDRParam, NULL, 0, lpszHdrBuffer);
@@ -208,7 +208,7 @@ bool XEngine_Task_HttpCenter(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("业务客户端:%s,请求GET心跳方法成功"), lpszClientAddr);
 		}
 	}
-	else if (0 == _tcsxncmp(lpszMethodHead, pSt_HTTPParam->tszHttpMethod, _tcsxlen(lpszMethodHead)))
+	else if (0 == _tcsxnicmp(lpszMethodHead, pSt_HTTPParam->tszHttpMethod, _tcsxlen(lpszMethodHead)))
 	{
 		//获得文件大小
 		XCHAR tszFileExt[64] = {};
