@@ -8,7 +8,7 @@ LIB = -lXEngine_BaseLib -lXEngine_Algorithm -lXEngine_Core -lXEngine_ManagePool 
 	  -ljsoncpp -ltinyxml2 -lXEngine_InfoReport -lXEngine_Verification
 LIBEX = 
 OBJECTS = Storage_TaskPass.o Storage_TaskManage.o Storage_TaskP2p.o Storage_TaskAction.o \
-		  StorageApp_Config.o StorageApp_Download.o StorageApp_Network.o StorageApp_Center.o StorageApp_UPLoader.o StorageApp_Webdav.o XEngine_StorageApp.o
+		  StorageApp_Config.o StorageApp_HTTPHelp.o StorageApp_Download.o StorageApp_Network.o StorageApp_Center.o StorageApp_UPLoader.o StorageApp_Webdav.o XEngine_StorageApp.o
 
 ifeq ($(RELEASE),1)
 FLAGS = -c -D _RELEASE
@@ -49,6 +49,8 @@ all:$(OBJECTS)
   
 StorageApp_Config.o:./StorageApp_Config.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./StorageApp_Config.cpp 
+StorageApp_HTTPHelp.o:./StorageApp_HTTPHelp.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./StorageApp_HTTPHelp.cpp 
 StorageApp_Download.o:./StorageApp_Download.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./StorageApp_Download.cpp
 StorageApp_Network.o:./StorageApp_Network.cpp

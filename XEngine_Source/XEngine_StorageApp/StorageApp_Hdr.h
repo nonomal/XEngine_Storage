@@ -115,6 +115,7 @@ extern XENGINE_LBCONFIG st_LoadbalanceCfg;
 
 #include "StorageApp_Network.h"
 #include "StorageApp_Config.h"
+#include "StorageApp_HTTPHelp.h"
 #include "StorageApp_Download.h"
 #include "StorageApp_UPLoader.h"
 #include "StorageApp_Center.h"
