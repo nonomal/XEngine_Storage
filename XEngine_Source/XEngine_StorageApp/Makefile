@@ -5,7 +5,7 @@ LOADSO =  -L ../XEngine_DependLibrary/XEngine_Module/jsoncpp -L ../XEngine_Depen
           -L ../StorageModule_Database -L ../StorageModule_Config -L ../StorageModule_Session -L ../StorageModule_APIHelp -L ../StorageModule_Protocol -L ../StorageModule_BTorrent
 LIB = -lXEngine_BaseLib -lXEngine_Algorithm -lXEngine_Core -lXEngine_ManagePool -lXEngine_Cryption -lXClient_APIHelp -lXEngine_SystemApi -lHelpComponents_XLog -lHelpComponents_Packets -lRfcComponents_HttpProtocol \
       -lStorageModule_Database -lStorageModule_Config -lStorageModule_Session -lStorageModule_APIHelp -lStorageModule_Protocol -lStorageModule_BTorrent  \
-	  -ljsoncpp -ltinyxml2 -lXEngine_InfoReport -lXEngine_Verification
+	  -ljsoncpp -ltinyxml2 -lXEngine_InfoReport -lXEngine_Verification 
 LIBEX = 
 OBJECTS = Storage_TaskPass.o Storage_TaskManage.o Storage_TaskP2p.o Storage_TaskAction.o \
 		  StorageApp_Config.o StorageApp_HTTPHelp.o StorageApp_Download.o StorageApp_Network.o StorageApp_Center.o StorageApp_UPLoader.o StorageApp_Webdav.o XEngine_StorageApp.o
@@ -32,6 +32,11 @@ endif
 ifeq ($(PLATFORM),linux)
 	ifeq (/etc/redhat-release,$(wildcard /etc/redhat-release))
 		PLATVER = -D __CENTOS__
+
+		CENTOS_VERSION := $(shell grep -w "VERSION_ID" /etc/os-release | cut -d '"' -f 2 | cut -d '.' -f 1)
+		ifeq ($(CENTOS_VERSION),10)
+			LIB += -lmongoc2
+    	endif
 	else
 		PLATVER = -D __UBUNTU__
 	endif

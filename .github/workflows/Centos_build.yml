@@ -79,7 +79,6 @@ jobs:
             
             chmod 777 *
             ./XEngine_LINEnv.sh -i 3
-            dnf install mongo-c-driver-devel -y
       - name: make
         run: |
             cd XEngine_Source
