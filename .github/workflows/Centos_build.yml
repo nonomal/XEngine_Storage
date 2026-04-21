@@ -68,7 +68,7 @@ jobs:
       - name: install system package
         run: |
             dnf update -y
-            dnf install gcc g++ make git jq unzip wget -y
+            dnf install gcc g++ make git jq unzip wget mongo-c-driver-devel -y
 
       - name: install xengine library
         run: |
