@@ -32,10 +32,6 @@ endif
 ifeq ($(PLATFORM),linux)
 	ifeq (/etc/redhat-release,$(wildcard /etc/redhat-release))
 		PLATVER = -D __CENTOS__
-
-		CENTOS_VERSION := $(shell grep -w "VERSION_ID" /etc/os-release | cut -d '"' -f 2 | cut -d '.' -f 1)
-		ifeq ($(CENTOS_VERSION),10)
-			LIB += -lmongoc2
     	endif
 	else
 		PLATVER = -D __UBUNTU__
