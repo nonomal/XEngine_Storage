@@ -49,6 +49,20 @@ void API_Manage_Bucket()
 	_xtprintf("API_Manage_Bucket:%d,%s\n", nCode, ptszMsgBuffer);
 	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 }
+void API_Manage_FileSize()
+{
+	LPCXSTR lpszUrl = _X("http://127.0.0.1:5100/XEngine_File/DekTec.zip");
+	int nCode = 0;
+	XCLIENT_APIHTTP st_APIHttp = {};
+
+	st_APIHttp.bNOBody = true;
+	if (!APIClient_Http_Request(_X("HEAD"), lpszUrl, NULL, &nCode, NULL, NULL, NULL, tszHdrBuffer, &st_APIHttp))
+	{
+		_xtprintf("API_Manage_FileSize:%lX\n", APIClient_GetLastError());
+		return;
+	}
+	_xtprintf("API_Manage_FileSize:%d,%s\n", nCode, tszHdrBuffer);
+}
 //查询
 void API_Manage_Query()
 {
@@ -191,6 +205,7 @@ int main()
 #endif
 
 	API_Manage_Bucket();
+	API_Manage_FileSize();
 	API_Manage_Query();
 	API_Manage_Insert();
 	API_Manage_Delete();
