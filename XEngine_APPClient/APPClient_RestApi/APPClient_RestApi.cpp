@@ -51,7 +51,7 @@ void API_Manage_Bucket()
 }
 void API_Manage_FileSize()
 {
-	LPCXSTR lpszUrl = _X("http://127.0.0.1:5100/XEngine_File/DekTec.zip");
+	LPCXSTR lpszUrl = _X("http://127.0.0.1:5100/storagekey1/DekTec.zip");
 	int nCode = 0;
 	XCLIENT_APIHTTP st_APIHttp = {};
 

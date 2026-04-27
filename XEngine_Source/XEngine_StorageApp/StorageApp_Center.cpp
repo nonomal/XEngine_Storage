@@ -141,10 +141,32 @@ bool XEngine_Task_HttpCenter(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 	else if (0 == _tcsxnicmp(lpszMethodHead, pSt_HTTPParam->tszHttpMethod, _tcsxlen(lpszMethodHead)))
 	{
 		//获得文件大小
+		XENGINE_STORAGEBUCKET st_StorageBucket = {};
+		//分布式存储
+		if (!APIHelp_Distributed_DLStorage(pSt_HTTPParam->tszHttpUri, st_LoadbalanceCfg.st_LoadBalance.pStl_ListBucket, &st_StorageBucket))
+		{
+			st_HDRParam.bIsClose = true;
+			st_HDRParam.nHttpCode = 404;
+
+			HttpProtocol_Server_SendMsgEx(xhDLHttp, tszSDBuffer, &nSDLen, &st_HDRParam);
+			XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, STORAGE_NETTYPE_HTTPCENTER);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("业务客户端:%s,请求文件失败,可能BUCKET:%s 不正确,错误：%lX"), lpszClientAddr, pSt_HTTPParam->tszHttpUri, StorageHelp_GetLastError());
+			return false;
+		}
+		if (!st_StorageBucket.bEnable)
+		{
+			st_HDRParam.bIsClose = true;
+			st_HDRParam.nHttpCode = 404;
+
+			HttpProtocol_Server_SendMsgEx(xhDLHttp, tszSDBuffer, &nSDLen, &st_HDRParam);
+			XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, STORAGE_NETTYPE_HTTPCENTER);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("业务客户端:%s,请求文件失败,请求的BUCKET:%s 已经被禁用"), lpszClientAddr, st_StorageBucket.tszBuckKey);
+			return false;
+		}
 		XCHAR tszFilePath[XPATH_MAX] = {};
 		SYSTEMAPI_FILE_ATTR st_FileAttr = {};
 
-		_xstprintf(tszFilePath, _X(".%s"), pSt_HTTPParam->tszHttpUri);
+		_xstprintf(tszFilePath, _X("%s%s"), st_StorageBucket.tszFilePath, st_StorageBucket.tszFileName);
 		if (0 != _xtaccess(tszFilePath, 0))
 		{
 			st_HDRParam.nHttpCode = 404;
