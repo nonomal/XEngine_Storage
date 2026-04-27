@@ -141,8 +141,6 @@ bool XEngine_Task_HttpCenter(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 	else if (0 == _tcsxnicmp(lpszMethodHead, pSt_HTTPParam->tszHttpMethod, _tcsxlen(lpszMethodHead)))
 	{
 		//获得文件大小
-		XCHAR tszFileExt[64] = {};
-		XCHAR tszFileHdr[XPATH_MIN] = {};
 		XCHAR tszFilePath[XPATH_MAX] = {};
 		SYSTEMAPI_FILE_ATTR st_FileAttr = {};
 
@@ -157,10 +155,7 @@ bool XEngine_Task_HttpCenter(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 			return false;
 		}
 		SystemApi_File_GetFileAttr(tszFilePath, &st_FileAttr);
-		BaseLib_String_GetFileAndPath(tszFilePath, NULL, NULL, NULL, tszFileExt);
-		_xstprintf(tszFileHdr, _X("Content-Length: %lld\r\n"), st_FileAttr.nFileSize);
-
-		HttpProtocol_Server_SendMsgEx(xhCenterHttp, tszSDBuffer, &nSDLen, &st_HDRParam, NULL, 0, tszFileHdr);
+		HttpProtocol_Server_SendMsgEx(xhCenterHttp, tszSDBuffer, &nSDLen, &st_HDRParam, NULL, st_FileAttr.nFileSize);
 		XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, STORAGE_NETTYPE_HTTPCENTER);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("业务客户端:%s,请求获取文件:%s 大小:%lld 成功"), lpszClientAddr, tszFilePath, st_FileAttr.nFileSize);
 	}

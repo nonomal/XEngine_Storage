@@ -32,7 +32,6 @@ endif
 ifeq ($(PLATFORM),linux)
 	ifeq (/etc/redhat-release,$(wildcard /etc/redhat-release))
 		PLATVER = -D __CENTOS__
-    	endif
 	else
 		PLATVER = -D __UBUNTU__
 	endif
