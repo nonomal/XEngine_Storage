@@ -190,9 +190,17 @@ bool CSession_UPStroage::Session_UPStroage_Insert(LPCXSTR lpszClientAddr, LPCXST
 			return false;
 		}
 
-		st_Client.st_StorageInfo.pSt_File = _xtfopen(lpszFileDir, _X("wb"));
+		int nFileHandle = _open(lpszFileDir, _O_CREAT | _O_WRONLY | _O_TRUNC, _S_IREAD | _S_IWRITE);
+		if (nFileHandle < 0)
+		{
+			Session_IsErrorOccur = true;
+			Session_dwErrorCode = ERROR_STORAGE_MODULE_SESSION_OPENFILE;
+			return false;
+		}
+		st_Client.st_StorageInfo.pSt_File = _fdopen(nFileHandle, "wb");
 		if (NULL == st_Client.st_StorageInfo.pSt_File)
 		{
+			_close(nFileHandle);
 			Session_IsErrorOccur = true;
 			Session_dwErrorCode = ERROR_STORAGE_MODULE_SESSION_OPENFILE;
 			return false;
