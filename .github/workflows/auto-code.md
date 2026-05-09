@@ -4,11 +4,11 @@ on:
     types: [labeled]
 
 engine:
-  id: claude
+  id: codex
   model: doubao-seed-2-0-code-preview-260215
   env:
-    ANTHROPIC_BASE_URL: "https://ark.cn-beijing.volces.com/api/coding"
-    ANTHROPIC_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    OPENAI_BASE_URL: "https://ark.cn-beijing.volces.com/api/v3"
+    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
 network:
   allowed:
