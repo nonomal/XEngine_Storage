@@ -4,19 +4,20 @@ on:
     types: [labeled]
 
 engine:
-  id: codex
-  model: doubao-seed-2-0-code-preview-260215
+  id: copilot
   env:
-    OPENAI_BASE_URL: "https://ark.cn-beijing.volces.com/api/v3"
-    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    COPILOT_PROVIDER_BASE_URL: "https://ark.cn-beijing.volces.com/api/v3"
+    COPILOT_MODEL: doubao-seed-2-0-code-preview-260215
+    COPILOT_PROVIDER_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    COPILOT_PROVIDER_TYPE: openai
 
 network:
   allowed:
+    - defaults
     - ark.cn-beijing.volces.com
 
 sandbox:
   agent: false
-
 strict: false
 
 tools:
