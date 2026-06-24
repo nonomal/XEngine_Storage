@@ -142,9 +142,19 @@ bool CSession_DLStroage::Session_DLStroage_Insert(LPCXSTR lpszClientAddr, LPCXST
 	struct _xtstat st_FStat;
 
 	memset(&st_Client, '\0', sizeof(SESSION_STORAGEINFO));
-	int nRet = _xtstat(lpszFileDir, &st_FStat);
+	//先打开文件，再基于已打开句柄获取文件属性，避免TOCTOU
+	st_Client.pSt_File = _xtfopen(lpszFileDir, _X("rb"));
+	if (NULL == st_Client.pSt_File)
+	{
+		Session_IsErrorOccur = true;
+		Session_dwErrorCode = ERROR_STORAGE_MODULE_SESSION_OPENFILE;
+		return false;
+	}
+	int nRet = _xtfstat(_xtfileno(st_Client.pSt_File), &st_FStat);
 	if (-1 == nRet)
 	{
+		xtfclose(st_Client.pSt_File);
+		st_Client.pSt_File = NULL;
 		Session_IsErrorOccur = true;
 		Session_dwErrorCode = ERROR_STORAGE_MODULE_SESSION_OPENFILE;
 		return false;
@@ -166,13 +176,6 @@ bool CSession_DLStroage::Session_DLStroage_Insert(LPCXSTR lpszClientAddr, LPCXST
 		st_Client.xhToken = xhToken;
 	}
 	//填充下载信息
-	st_Client.pSt_File = _xtfopen(lpszFileDir, _X("rb"));
-	if (NULL == st_Client.pSt_File)
-	{
-		Session_IsErrorOccur = true;
-		Session_dwErrorCode = ERROR_STORAGE_MODULE_SESSION_OPENFILE;
-		return false;
-	}
 	//是否有范围
 	if ((nPosStart > 0) || (nPostEnd > 0))
 	{
