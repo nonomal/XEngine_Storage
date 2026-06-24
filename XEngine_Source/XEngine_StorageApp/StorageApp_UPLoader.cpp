@@ -1,4 +1,8 @@
 ﻿#include "StorageApp_Hdr.h"
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <stdio.h>
 
 XHTHREAD XCALLBACK XEngine_UPLoader_HTTPThread(XPVOID lParam)
 {
@@ -66,7 +70,7 @@ bool XEngine_Task_HttpUPLoader(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, in
 	LPCXSTR lpszMethodPost = _X("POST");
 	LPCXSTR lpszMethodPut = _X("PUT");
 
-	if ((0 != _tcsxncmp(lpszMethodPost, pSt_HTTPParam->tszHttpMethod, _tcsxlen(lpszMethodPost))) && (0 != _tcsxncmp(lpszMethodPut, pSt_HTTPParam->tszHttpMethod, _tcsxlen(lpszMethodPut))))
+	if ((0 != _tcsxnicmp(lpszMethodPost, pSt_HTTPParam->tszHttpMethod, _tcsxlen(lpszMethodPost))) && (0 != _tcsxnicmp(lpszMethodPut, pSt_HTTPParam->tszHttpMethod, _tcsxlen(lpszMethodPut))))
 	{
 		st_HDRParam.bIsClose = true;
 		st_HDRParam.nHttpCode = 405;
@@ -93,95 +97,10 @@ bool XEngine_Task_HttpUPLoader(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, in
 	//用户验证
 	if (st_ServiceCfg.st_XProxy.bUPPass)
 	{
-		int nVType = 0;
-		RFCCOMPONENTS_HTTP_HDRPARAM st_HDRParam = {};
-
-		st_HDRParam.nHttpCode = 401;
-		st_HDRParam.bIsClose = true;
-		st_HDRParam.bAuth = true;
-		//打包验证信息
-		int nHDRLen = 0;
-		XCHAR tszHDRBuffer[XPATH_MAX] = {};
-		if (1 == st_ServiceCfg.st_XProxy.nVType)
+		if (!StorageApp_HTTPHelp_Verification(lpszClientAddr, pSt_HTTPParam, pptszListHdr, nHdrCount, st_ServiceCfg.st_XProxy.tszUPPass))
 		{
-			Verification_HTTP_BasicServerPacket(tszHDRBuffer, &nHDRLen);
-		}
-		else
-		{
-			XCHAR tszNonceStr[64] = {};
-			XCHAR tszOpaqueStr[64] = {};
-			Verification_HTTP_DigestServerPacket(tszHDRBuffer, &nHDRLen, tszNonceStr, tszOpaqueStr);
-		}
-		//后去验证方法
-		if (!Verification_HTTP_GetType(pptszListHdr, nHdrCount, &nVType))
-		{
-			HttpProtocol_Server_SendMsgEx(xhCenterHttp, tszSDBuffer, &nSDLen, &st_HDRParam, NULL, 0, tszHDRBuffer);
-			XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, STORAGE_NETTYPE_HTTPUPLOADER);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("上传客户端:%s,用户验证失败,验证方式:%d,错误:%lX"), lpszClientAddr, st_ServiceCfg.st_XProxy.nVType, Verification_GetLastError());
 			return false;
 		}
-		//验证方式是否一致
-		if (st_ServiceCfg.st_XProxy.nVType != nVType)
-		{
-			HttpProtocol_Server_SendMsgEx(xhCenterHttp, tszSDBuffer, &nSDLen, &st_HDRParam, NULL, 0, tszHDRBuffer);
-			XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, STORAGE_NETTYPE_HTTPUPLOADER);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("上传客户端:%s,用户验证失败,验证方式错误,请求:%d,需求:%d"), lpszClientAddr, nVType, st_ServiceCfg.st_XProxy.nVType);
-			return false;
-		}
-		bool bRet = false;
-		int nHTTPCode = 0;
-		int nMSGLen = 0;
-		XCLIENT_APIHTTP st_APIHttp = {};
-
-		XCHAR* ptszMSGBuffer = NULL;
-		if (!APIClient_Http_Request(_X("GET"), st_ServiceCfg.st_XProxy.tszUPPass, NULL, &nHTTPCode, &ptszMSGBuffer, &nMSGLen, NULL, NULL, &st_APIHttp))
-		{
-			st_HDRParam.nHttpCode = 500;
-			Protocol_StoragePacket_HTTPPacket(tszRVBuffer, &nRVLen, ERROR_STORAGE_PROTOCOL_HTTP_MANAGE_SERVERDOWN, "api server is down,cant verification");
-			HttpProtocol_Server_SendMsgEx(xhCenterHttp, tszSDBuffer, &nSDLen, &st_HDRParam, tszRVBuffer, nRVLen, tszHDRBuffer);
-			XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, STORAGE_NETTYPE_HTTPUPLOADER);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("上传客户端:%s,用户验证失败,GET请求验证服务:%s 失败,错误码:%lX"), lpszClientAddr, st_ServiceCfg.st_XProxy.tszUPPass, APIClient_GetLastError());
-			return false;
-		}
-		if (200 != nHTTPCode)
-		{
-			st_HDRParam.nHttpCode = 500;
-			Protocol_StoragePacket_HTTPPacket(tszRVBuffer, &nRVLen, ERROR_STORAGE_PROTOCOL_HTTP_MANAGE_SERVERDOWN, "api server is down,cant verification");
-			HttpProtocol_Server_SendMsgEx(xhCenterHttp, tszSDBuffer, &nSDLen, &st_HDRParam, tszRVBuffer, nRVLen, tszHDRBuffer);
-			XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, STORAGE_NETTYPE_HTTPUPLOADER);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("上传客户端:%s,用户验证失败,GET请求验证服务:%s 失败,错误:%d"), lpszClientAddr, st_ServiceCfg.st_XProxy.tszUPPass, nHTTPCode);
-			return false;
-		}
-		XENGINE_PROTOCOL_USERAUTH st_UserAuth = {};
-		if (!Protocol_StorageParse_User(ptszMSGBuffer, nMsgLen, &st_UserAuth))
-		{
-			st_HDRParam.nHttpCode = 500;
-			Protocol_StoragePacket_HTTPPacket(tszRVBuffer, &nRVLen, ERROR_STORAGE_PROTOCOL_HTTP_MANAGE_AUTHFAIL, "api server reply failure,cant verification");
-			HttpProtocol_Server_SendMsgEx(xhCenterHttp, tszSDBuffer, &nSDLen, &st_HDRParam, tszRVBuffer, nRVLen, tszHDRBuffer);
-			XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, STORAGE_NETTYPE_HTTPUPLOADER);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("上传客户端:%s,用户验证失败,返回内容:%s 错误,无法继续"), lpszClientAddr, ptszMSGBuffer);
-			BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMSGBuffer);
-			return false;
-		}
-		BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMSGBuffer);
-
-		if (1 == nVType)
-		{
-			bRet = Verification_HTTP_Basic(st_UserAuth.tszUserName, st_UserAuth.tszUserPass, pptszListHdr, nHdrCount);
-		}
-		else if (2 == nVType)
-		{
-			bRet = Verification_HTTP_Digest(st_UserAuth.tszUserName, st_UserAuth.tszUserPass, pSt_HTTPParam->tszHttpMethod, pptszListHdr, nHdrCount);
-		}
-
-		if (!bRet)
-		{
-			HttpProtocol_Server_SendMsgEx(xhCenterHttp, tszSDBuffer, &nSDLen, &st_HDRParam, NULL, 0, tszHDRBuffer);
-			XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, STORAGE_NETTYPE_HTTPUPLOADER);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("上传客户端:%s,用户验证失败,验证处理错误,可能用户密码登信息不匹配,类型:%d"), lpszClientAddr, nVType);
-			return false;
-		}
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("上传客户端:%s,HTTP验证类型:%d 通过"), lpszClientAddr, nVType);
 	}
 	//使用重定向?
 	if (st_LoadbalanceCfg.st_LBDistributed.nUPLoadMode > 0)
@@ -277,9 +196,20 @@ bool XEngine_Task_HttpUPLoader(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, in
 					return true;
 				}
 				//文件是否可写
-				FILE* pSt_File = _xtfopen(tszFileDir, _X("wb"));
+				int nFileFD = open(tszFileDir, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+				if (nFileFD < 0)
+				{
+					st_HDRParam.bIsClose = true;
+					st_HDRParam.nHttpCode = 403;
+					HttpProtocol_Server_SendMsgEx(xhUPHttp, tszSDBuffer, &nSDLen, &st_HDRParam);
+					XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("上传客户端:%s,准备上传文件:%s 失败,创建文件失败"), lpszClientAddr, tszFileDir);
+					return true;
+				}
+				FILE* pSt_File = fdopen(nFileFD, "wb");
 				if (NULL == pSt_File)
 				{
+					close(nFileFD);
 					st_HDRParam.bIsClose = true;
 					st_HDRParam.nHttpCode = 403;
 					HttpProtocol_Server_SendMsgEx(xhUPHttp, tszSDBuffer, &nSDLen, &st_HDRParam);
@@ -541,6 +471,7 @@ bool XEngine_Task_HttpUPLoader(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, in
 			XEngine_Net_SendMsg(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("上传客户端:%s,请求上传文件成功,文件名:%s,大小:%d,数据库没有启用,不插入数据库"), lpszClientAddr, tszFileDir, nRVCount);
 		}
+		APIHelp_Distributed_SetSize(st_LoadbalanceCfg.st_LoadBalance.pStl_ListBucket, st_StorageBucket.tszBuckKey, st_ProtocolFile.st_ProtocolFile.nFileSize);
 	}
 	else
 	{

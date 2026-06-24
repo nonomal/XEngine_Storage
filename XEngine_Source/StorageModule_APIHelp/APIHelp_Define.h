@@ -166,6 +166,44 @@ extern "C" bool APIHelp_Distributed_UPStorage(list<XENGINE_STORAGEBUCKET>* pStl_
 备注：
 *********************************************************************/
 extern "C" bool APIHelp_Distributed_GetPathKey(list<XENGINE_STORAGEBUCKET>* pStl_ListBucket, LPCXSTR lpszBuckKey, XCHAR* ptszFilePath);
+/********************************************************************
+函数名称：APIHelp_Distributed_GetSize
+函数功能：获取存储设置大小
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要获取的缓冲区
+返回值
+  类型：整数型
+  意思：获取到的大小字节
+备注：
+*********************************************************************/
+extern "C" __int64u APIHelp_Distributed_GetSize(LPCXSTR lpszMsgBuffer);
+/********************************************************************
+函数名称：APIHelp_Distributed_SetSize
+函数功能：设置指定BUCKET当前大小
+ 参数.一：pStl_ListBucket
+  In/Out：In
+  类型：STL容器
+  可空：N
+  意思：输入BUCKET列表
+ 参数.二：lpszBuckKey
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要查询的BUCKET名称
+ 参数.三：nSize
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：支持+ - 操作
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool APIHelp_Distributed_SetSize(list<XENGINE_STORAGEBUCKET>* pStl_ListBucket, LPCXSTR lpszBuckKey, __int64x nSize);
 /************************************************************************/
 /*                       帮助函数                                       */
 /************************************************************************/
@@ -380,3 +418,27 @@ extern "C" bool APIHelp_Api_GetLastName(XCHAR* ptszLastName, LPCXSTR lpszPathStr
 备注：
 *********************************************************************/
 extern "C" bool APIHelp_Api_WDToUrl(LPCXSTR lpszUrl, XCHAR* ptszUrl);
+/********************************************************************
+函数名称：APIHelp_Api_BSizeToStr
+函数功能：大小转字符串函数
+ 参数.一：nSize
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要转换大小
+ 参数.二：ptszSizeStr
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：输出转换后的字符串
+ 参数.三：nType
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入转换的类型 0-B 1-KB 2-MB 3-GB
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool APIHelp_Api_BSizeToStr(__int64x nSize, XCHAR* ptszSizeStr, int nType);

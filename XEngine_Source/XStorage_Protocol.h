@@ -28,6 +28,7 @@
 #define ERROR_STORAGE_PROTOCOL_HTTP_MANAGE_NOENABLE 0x105                 //功能没有启用
 #define ERROR_STORAGE_PROTOCOL_HTTP_MANAGE_SERVERDOWN 0x106               //服务器不可用
 #define ERROR_STORAGE_PROTOCOL_HTTP_MANAGE_AUTHFAIL 0x107                 //用户验证失败
+#define ERROR_STORAGE_PROTOCOL_HTTP_MANAGE_DISABLE 0x108                  //功能被禁用
 //////////////////////////////////////////////////////////////////////////
 //                         协议结构体
 //////////////////////////////////////////////////////////////////////////
