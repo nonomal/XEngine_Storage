@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "BTorrent_DLoader.h"
+#include <new>
 /********************************************************************
 //    Created:     2023/02/02  16:26:33
 //    File Name:   D:\XEngine\XEngine_SourceCode\XEngine_NetHelp\NetHelp_BTorrent\BTorrent_DLoader\BTorrent_DLoader.cpp
@@ -54,7 +55,7 @@ XHANDLE CBTorrent_DLoader::BTorrent_DLoader_Create(LPCXSTR lpszAddr, LPCXSTR lps
         return NULL;
     }
 	//申请空间
-	BTORRENT_DLOADINFO* pSt_BTDLoader = new BTORRENT_DLOADINFO;
+	BTORRENT_DLOADINFO* pSt_BTDLoader = new (std::nothrow) BTORRENT_DLOADINFO;
 	if (NULL == pSt_BTDLoader)
 	{
 		BTDload_IsErrorOccur = true;
