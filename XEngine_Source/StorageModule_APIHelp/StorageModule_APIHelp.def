@@ -9,6 +9,8 @@ EXPORTS
 	APIHelp_Distributed_CTStorage
 	APIHelp_Distributed_UPStorage
 	APIHelp_Distributed_GetPathKey
+	APIHelp_Distributed_GetSize
+	APIHelp_Distributed_SetSize
 
 	APIHelp_Api_RangeFile
 	APIHelp_Api_VerHash
@@ -19,3 +21,4 @@ EXPORTS
 	APIHelp_Api_UrlStr
 	APIHelp_Api_GetLastName
 	APIHelp_Api_WDToUrl
+	APIHelp_Api_BSizeToStr

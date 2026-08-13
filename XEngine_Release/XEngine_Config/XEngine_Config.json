@@ -82,7 +82,7 @@
     },
     "XAction": {
         "bEnable": true,
-        "nSDMax": 1024000,
-        "nRVMax": 1024000
+        "nSDMax": 0,
+        "nRVMax": 0
     }
 }
